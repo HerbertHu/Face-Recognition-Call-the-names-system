@@ -567,7 +567,7 @@ void MainWindow::on_actionDelete_information_triggered()
         //cout << m_numPersons << endl;
         for(int i = 0; i < m_numPersons; i++){
             id = QString::fromStdString(to_string(i));
-            sql_update = "UPDATE students SET attend_class = 'unknow' WHERE id = '"+ id;
+            sql_update = "UPDATE students SET attend_class = 'unknown' WHERE id = '"+ id;
             sql_update.append("'");
             //cout << sql_update.toStdString() << endl;
             query.prepare(sql_update);
@@ -645,5 +645,5 @@ void MainWindow::on_pushButton_2_clicked()
 //说明文字
 void MainWindow::on_actionHelp_triggered()
 {
-    QMessageBox::about(NULL, "说明","人脸识别点名系统\ngithub: https://github.com/HerbertHu/Face-Recognition-Call-the-names-system\n©Herbert_Hu");
+    QMessageBox::about(NULL, "说明","人脸识别点名系统\ngithub: \nhttps://github.com/HerbertHu/Face-Recognition-Call-the-names-system\n©Herbert_Hu");
 }
