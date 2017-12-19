@@ -29,7 +29,7 @@ MainWindow::~MainWindow()
 }
 
 
-const float UNKNOWN_PERSON_THRESHOLD = 0.7f;
+const float UNKNOWN_PERSON_THRESHOLD = 0.65f;
 
 const int BORDER = 8;  // Border between GUI elements to the edge of the image.
 
@@ -228,7 +228,7 @@ void MainWindow::collect(VideoCapture &videoCapture, CascadeClassifier &faceCasc
 
     m_latestFaces.push_back(-1);
 
-    while(i < 10){
+    while(i < 7){
         // Grab the next camera frame. Note that you can't modify camera frames.
         Mat cameraFrame;
         videoCapture >> cameraFrame;
@@ -327,7 +327,7 @@ Ptr<BasicFaceRecognizer> MainWindow::training(vector<Mat> &preprocessedFaces, ve
     // Start training from the collected faces using Eigenfaces or a similar algorithm.
     model = learnCollectedFaces(preprocessedFaces, faceLabels, facerecAlgorithm);
     string name = "person_" + to_string(m_selectedPerson) +".xml";
-    //cout << name << endl;
+    cout << name << endl;
 
     model->save(name);
     cout << "person " << to_string(m_selectedPerson) << " train model finish " << endl;
@@ -379,7 +379,7 @@ void MainWindow::recognition(VideoCapture &videoCapture, CascadeClassifier &face
     for(int j = 0; j < m_numPersons; j++){
         string name = "person_" + to_string(j) + ".xml";
         model->load(name);
-        //cout << "load " << name << endl;
+        cout << "load " << name << endl;
 
         if (gotFaceAndEyes) {
 
@@ -392,18 +392,14 @@ void MainWindow::recognition(VideoCapture &videoCapture, CascadeClassifier &face
 
             if (similarity < UNKNOWN_PERSON_THRESHOLD) {
                 // Identify who the person is in the preprocessed face image.
-                identity = model->predict(preprocessedFace);
-                if(identity >= 0 && identity < m_numPersons ){
-                    outputStr = to_string(identity);
-                    timer_recognition->stop();
-                    cout << "Identity: " << outputStr << ". Similarity: " << similarity << endl;
-                    printStudentInformation(outputStr);
-                    break;
-                }
-                else{
-                    ui->label_6->setText("Unknown");
-                    cout << "Identity: Unknown. Similarity: " << similarity << endl;
-                }
+                identity = j;
+
+                outputStr = to_string(identity);
+                timer_recognition->stop();
+                cout << "Identity: " << outputStr << ". Similarity: " << similarity << endl;
+                printStudentInformation(outputStr);
+                break;
+
             }
             else if(j+1 == m_numPersons){
                 // Since the confidence is low, assume it is an unknown person.
