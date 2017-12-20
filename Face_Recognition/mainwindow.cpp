@@ -64,6 +64,14 @@ const bool preprocessLeftAndRightSeparately = true;
 int m_selectedPerson = 0;
 vector<int> m_latestFaces;
 
+void MainWindow::sleep(unsigned int msec)
+{
+    QTime reachTime = QTime::currentTime().addMSecs(msec);
+    while(QTime::currentTime() < reachTime){
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    }
+}
+
 QImage Mat2QImage(const Mat &mat)
 {
     //8-bits unsigned,NO.OFCHANNELS=1
@@ -317,6 +325,7 @@ void MainWindow::collect(VideoCapture &videoCapture, CascadeClassifier &faceCasc
                 old_time = current_time;
             }
         }
+        sleep(500);
     }
 }
 
@@ -327,7 +336,7 @@ Ptr<BasicFaceRecognizer> MainWindow::training(vector<Mat> &preprocessedFaces, ve
     // Start training from the collected faces using Eigenfaces or a similar algorithm.
     model = learnCollectedFaces(preprocessedFaces, faceLabels, facerecAlgorithm);
     string name = "person_" + to_string(m_selectedPerson) +".xml";
-    cout << name << endl;
+    //cout << name << endl;
 
     model->save(name);
     cout << "person " << to_string(m_selectedPerson) << " train model finish " << endl;
@@ -379,7 +388,7 @@ void MainWindow::recognition(VideoCapture &videoCapture, CascadeClassifier &face
     for(int j = 0; j < m_numPersons; j++){
         string name = "person_" + to_string(j) + ".xml";
         model->load(name);
-        cout << "load " << name << endl;
+        //cout << "load " << name << endl;
 
         if (gotFaceAndEyes) {
 
@@ -414,19 +423,6 @@ void MainWindow::recognition(VideoCapture &videoCapture, CascadeClassifier &face
         ui->label_6->setText("No face");
     }
 
-}
-
-void MainWindow::test()
-{
-    Ptr<BasicFaceRecognizer> model = face::createEigenFaceRecognizer();
-
-    if (model.empty()) {
-        cerr << "ERROR: The FaceRecognizer algorithm [" << facerecAlgorithm << "] is not available in your version of OpenCV. Please update to OpenCV v2.4.1 or newer." << endl;
-        exit(1);
-    }
-
-    model->load("E:/C++_Qt/build-Face_Recognition-Desktop_Qt_5_6_2_MinGW_32bit-Debug/person_0.xml");
-    cout << "load successful " << endl;
 }
 
 void MainWindow::readCamera_detect()

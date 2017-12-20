@@ -20,6 +20,7 @@
 #include <recognition.h>
 
 #include <QTimer>
+#include <QTime>
 
 namespace Ui {
 class MainWindow;
@@ -71,7 +72,7 @@ private:
     void collect(VideoCapture &videoCapture, CascadeClassifier &faceCascade, CascadeClassifier &eyeCascade1, CascadeClassifier &eyeCascade2, vector<Mat> &preprocessedFaces, vector<int> &faceLabels);
     void recognition(VideoCapture &videoCapture, CascadeClassifier &faceCascade, CascadeClassifier &eyeCascade1, CascadeClassifier &eyeCascade2);
     Ptr<BasicFaceRecognizer> training(vector<Mat> &preprocessedFaces, vector<int> &faceLabels);
-    void test();
+    void sleep(unsigned int msec);
 };
 
 #endif // MAINWINDOW_H
